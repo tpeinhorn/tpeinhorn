@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    tp.devops.checker: data-gen-api
+  name: data-gen-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      tp.devops.checker: data-gen-api
+  template:
+    metadata:
+      labels:
+        tp.devops.checker: data-gen-api
+    spec:
+      containers:
+        - env:
+            # - name: DATA_RETRIEVE_EXT_PORT
+            #   value: "8022"
+            # - name: DATA_SAVER_EXT_PORT
+            #   value: "8021"
+            - name: DB_SQL_EXT
+              value: sql-server-db
+            - name: DB_SQL_EXT_PORT
+              value: "1433"
+          image: {{ .Values.image.registry }}data-gen-api:{{ .Values.image.version }}
+          name: data-gen-api
+          ports:
+            - containerPort: 80
+      restartPolicy: Always
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    tp.devops.checker: data-gen-api
+  name: data-gen-api
+spec:
+  ports:
+    - name: "data-gen-api"
+      port: 80
+      targetPort: 80
+  selector:
+    tp.devops.checker: data-gen-api
+

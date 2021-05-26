@@ -1,0 +1,43 @@
+# The mounted directories must have chmod -R 0777 /mydirectory before
+version: "3.2"
+services:
+
+  sql-server-db:
+    container_name: sql-server-db
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    hostname: sqlserver-swis
+    ports:
+      - "12433:1433"
+
+    # The temfs mounts to see if this is working
+    # tmpfs:
+    #   - /test1
+      - /var/opt/mssql/data:rw
+      - /var/opt/mssql/log:rw
+      - /var/opt/mssql/secrets :rw
+
+    # volumes:
+          # - /home/nxf42609/test1:/test1
+      # - cache_vol:/test1
+      # - run_vol:/run1
+      # - data_vol:/var/opt/mssql/data 
+      # - log_vol:/var/opt/mssql/log 
+      # - /home/nxf42609/data/source/tpte-platform/tp-hello-devops/db-sql/db/secrets:/var/opt/mssql/secrets 
+
+    environment:
+      SA_PASSWORD: "MyStrongPassword123"
+      ACCEPT_EULA: "Y"
+
+# volumes:
+#   log_vol:
+#     driver_opts:
+#       type: tmpfs
+#       device: tmpfs
+#   data_vol:
+#     driver_opts:
+#       type: tmpfs
+#       device: tmpfs
+#   cache_vol:
+#     driver_opts:
+#       type: tmpfs
+#       device: tmpfs

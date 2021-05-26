@@ -1,0 +1,28 @@
+# Default values for tp-unicorn-svc
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+name: tp-unicorn-svc
+
+image:
+  # registry: localhost:32000/tp-unicorn/
+  registry: lsv05413.swis.nl-cdc01.nxp.com:5000/tp-unicorn/
+  version: 0.3
+
+imagePullSecrets: [
+  name: cred-nexus-tp-docker
+  ]
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi

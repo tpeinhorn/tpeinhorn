@@ -1,0 +1,20 @@
+{
+    "cluster": "cluster-unicorn",
+    "serviceName": "data-gen-api",
+    "taskDefinition": "data-gen-api-task",
+    "serviceRegistries": [
+       {
+          "registryArn": "arn:aws:servicediscovery:eu-west-1:485458181338:service/srv-dbxnp5o4um474ud7"
+       }
+    ],
+    "launchType": "FARGATE",
+    "platformVersion": "LATEST",
+    "networkConfiguration": {
+       "awsvpcConfiguration": {
+          "assignPublicIp": "ENABLED",
+          "securityGroups": [ "sg-09670ff0703f55827" ],
+          "subnets": [ "subnet-084b20b0f2a4c1d1e" ]
+       }
+    },
+    "desiredCount": 1
+}

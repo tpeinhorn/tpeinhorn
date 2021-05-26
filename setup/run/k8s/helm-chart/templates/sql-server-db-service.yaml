@@ -1,0 +1,74 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: mydb
+  name: mydb
+spec:
+  volumes:
+    - name: sqldata-storage
+      persistentVolumeClaim:
+        claimName: dbclaim
+  initContainers:
+  - name: volume-permissions
+    image: busybox
+    command: ["sh", "-c", "chown -R 10001:0 /var/opt/mssql"]
+    volumeMounts:
+    - mountPath: "/var/opt/mssql"
+      name: sqldata-storage
+  containers:
+  - image: mcr.microsoft.com/mssql/server
+    name: mydb
+    env:
+    - name: ACCEPT_EULA
+      value: "Y"
+    - name: SA_PASSWORD
+      value: TestingPassword1
+    - name: MSSQL_PID
+      value: Developer
+    ports:
+    - containerPort: 1433
+      name: mydb
+    volumeMounts:
+    - mountPath: "/var/opt/mssql"
+      name: sqldata-storage
+---
+apiVersion: v1
+kind: Service
+metadata:
+   name: mydb
+spec:
+  type: NodePort
+  ports:
+  - port: 1433 
+    nodePort: 31433
+  selector:
+    run: mydb
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: sqldata
+spec:
+  capacity:
+    storage: 500Mi
+  storageClassName: sqlserver
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: "/partssd/sql-data/"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: dbclaim
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: sqlserver
+  resources:
+    requests:
+      storage: 400Mi
+
+

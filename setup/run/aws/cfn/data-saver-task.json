@@ -1,0 +1,41 @@
+{
+    "family": "data-saver-task", 
+    "networkMode": "awsvpc", 
+    "executionRoleArn": "arn:aws:iam::485458181338:role/ecsTaskExecutionRole",
+    "containerDefinitions": [
+        {
+            "name": "data-saver", 
+            "image": "485458181338.dkr.ecr.eu-west-1.amazonaws.com/tp-unicorn/data-saver", 
+            "portMappings": [
+                {
+                    "containerPort": 80, 
+                    "hostPort": 80, 
+                    "protocol": "tcp"
+                }
+            ],
+            "environment": [
+                {
+                    "name": "DATA_GEN_API_EXT",
+                    "value": "data-gen-api.sd-unicorn"
+                },
+                {
+                    "name": "DB_SQL_EXT",
+                    "value": "sql-server-db.sd-unicorn"
+                }
+            ],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "awslogs-unicorn",
+                    "awslogs-region": "eu-west-1",
+                    "awslogs-stream-prefix": "data-saver"
+                }
+            }
+        }
+    ], 
+    "requiresCompatibilities": [
+        "FARGATE"
+    ], 
+    "cpu": "256", 
+    "memory": "512"
+}

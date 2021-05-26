@@ -1,0 +1,6 @@
+name: tp-unicorn-svc
+description: A generated Helm Chart  
+version: 0.0.2
+appVersion: "0.3.0"
+apiVersion: v1
+ 

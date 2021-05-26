@@ -1,0 +1,6 @@
+name: tp-unicorn-db
+description: This deploys TDLog global backend DB instances.
+apiVersion: v2
+type: application
+version: 0.0.2
+appVersion: "0.3.0"

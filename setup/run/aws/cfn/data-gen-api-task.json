@@ -1,0 +1,54 @@
+{
+    "family": "data-gen-api-task", 
+    "networkMode": "awsvpc", 
+    "executionRoleArn": "arn:aws:iam::485458181338:role/ecsTaskExecutionRole",
+    "containerDefinitions": [
+        {
+            "name": "data-gen-api", 
+            "image": "485458181338.dkr.ecr.eu-west-1.amazonaws.com/tp-unicorn/data-gen-api", 
+            "portMappings": [
+                {
+                    "containerPort": 80, 
+                    "hostPort": 80, 
+                    "protocol": "tcp"
+                }
+            ],
+            "environment": [
+                {
+                    "name": "DATA_RETRIEVE_EXT",
+                    "value": "data-retrieve.sd-unicorn"
+                }
+            ],
+            "essential": true,
+            "mountPoints": [
+                {
+                    "containerPath": "/data-gen-api-ps",
+                    "sourceVolume": "data-gen-api-ps"
+                }
+            ],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "awslogs-unicorn",
+                    "awslogs-region": "eu-west-1",
+                    "awslogs-stream-prefix": "data-gen-api"
+                }
+            }
+        }
+    ], 
+    "volumes": [
+        {
+            "name": "data-gen-api-ps",
+            "efsVolumeConfiguration": {
+                "fileSystemId": "fs-d049bae4",
+                "transitEncryption": "ENABLED",
+                "rootDirectory": "/tp-unicorn/data-gen-api-ps"
+            }
+        }
+    ],
+    "requiresCompatibilities": [
+        "FARGATE"
+    ], 
+    "cpu": "256", 
+    "memory": "512"
+}

@@ -1,0 +1,14 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: test-unicorn
+spec:
+  template:
+    # This is the pod template
+    spec:
+      containers:
+      - name: test-unicorn
+        image: mcr.microsoft.com/dotnet/sdk:3.1
+        command: ['sh', '-c', 'echo "Hello, Kubernetes!" && sleep 360000']
+      restartPolicy: OnFailure
+    # The pod template ends here

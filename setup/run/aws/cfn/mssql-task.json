@@ -1,0 +1,83 @@
+{
+    "family": "sql-server-db-task", 
+    "networkMode": "awsvpc", 
+    "executionRoleArn": "arn:aws:iam::485458181338:role/ecsTaskExecutionRole",
+    "containerDefinitions": [
+        {
+            "name": "sql-server-db", 
+            "image": "mcr.microsoft.com/mssql/server:2019-latest", 
+            "portMappings": [
+                {
+                    "containerPort": 1433, 
+                    "hostPort": 1433, 
+                    "protocol": "tcp"
+                }
+            ],
+            "environment": [
+                {
+                    "name": "SA_PASSWORD",
+                    "value": "MyStrongPassword123"
+                },
+                {
+                    "name": "ACCEPT_EULA",
+                    "value": "Y"
+                }
+            ],      
+            "essential": true,
+            "mountPoints": [
+                {
+                    "containerPath": "/var/opt/mssql/log",
+                    "sourceVolume": "db-sql-ps-log"
+                },
+                {
+                    "containerPath": "/var/opt/mssql/data",
+                    "sourceVolume": "db-sql-ps-data"
+                },
+                {
+                    "containerPath": "/var/opt/mssql/secrets",
+                    "sourceVolume": "db-sql-ps-secrets"
+                }                                
+            ],              
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "awslogs-unicorn",
+                    "awslogs-region": "eu-west-1",
+                    "awslogs-stream-prefix": "sql-server-db"
+                }
+            }
+        }
+    ], 
+    "volumes": [
+        {
+            "name": "db-sql-ps-log",
+            "efsVolumeConfiguration": {
+                "fileSystemId": "fs-d049bae4",
+                "transitEncryption": "ENABLED",
+                "rootDirectory": "/tp-unicorn/db-sql-ps/db/log"
+            }
+        },
+        {
+            "name": "db-sql-ps-data",
+            "efsVolumeConfiguration": {
+                "fileSystemId": "fs-d049bae4",
+                "transitEncryption": "ENABLED",
+                "rootDirectory": "/tp-unicorn/db-sql-ps/db/data"
+            }
+        },
+        {
+            "name": "db-sql-ps-secrets",
+            "efsVolumeConfiguration": {
+                "fileSystemId": "fs-d049bae4",
+                "transitEncryption": "ENABLED",
+                "rootDirectory": "/tp-unicorn/db-sql-ps/db/secrets"
+            }
+        }
+    ],     
+    "requiresCompatibilities": [
+        "FARGATE"
+    ], 
+    "cpu": "1024", 
+    "memory": "2048"
+}
+ 

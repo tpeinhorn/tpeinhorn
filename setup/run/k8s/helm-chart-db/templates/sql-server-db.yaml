@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-sql-server-db
+  labels:
+    app: sql-server-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sql-server-db
+  template:
+    metadata:
+      labels:
+        app: sql-server-db
+    spec:
+      containers:
+      - resources:
+        name: sql-server-db
+        image: mcr.microsoft.com/mssql/server
+        env:
+        - name: ACCEPT_EULA
+          value: "Y"
+        - name: SA_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.name }}-secret
+              key: password        
+        ports:
+        - containerPort: 1433
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sql-server-db
+  labels:
+    app: sql-server-db
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.port }}
+      protocol: TCP
+      name: sql-server-db
+  selector:
+    app: sql-server-db
+

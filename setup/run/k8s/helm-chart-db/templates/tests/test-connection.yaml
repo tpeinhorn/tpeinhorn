@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "global-db.fullname" . }}-test-connection"
+  labels:
+    {{- include "global-db.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ include "global-db.fullname" . }}:{{ .Values.service.port }}']
+  restartPolicy: Never

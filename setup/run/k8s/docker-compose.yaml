@@ -1,0 +1,73 @@
+# The mounted directories must have chmod -R 0777 /mydirectory before
+version: "3.2"
+services:
+  data-gen-api:
+    build:
+      dockerfile: /home/nxf42609/data/source/tpte-platform/tp-hello-devops/data-gen-api/Dockerfile
+      context: /home/nxf42609/data/source/tpte-platform/tp-hello-devops/data-gen-api/
+
+    container_name: data-gen-api
+    image: data-gen-api:0.2
+    hostname: data-gen-api
+    ports:
+      - "8020:80"
+    environment:
+      # DATA_GEN_API_PORT: 80
+      # DATA_GEN_API_EXT_PORT: 8020
+      DATA_SAVER_EXT_PORT: 8021
+      DATA_RETRIEVE_EXT_PORT: 80
+      DB_SQL_EXT: "sql-server-db"
+      DB_SQL_EXT_PORT: 1433
+      DATA_RETRIEVE_EXT: "data-retrieve"
+
+  data-saver:
+    build:
+      dockerfile: /home/nxf42609/data/source/tpte-platform/tp-hello-devops/data-saver/Dockerfile
+      context: /home/nxf42609/data/source/tpte-platform/tp-hello-devops/data-saver/  
+    container_name: data-saver
+    image: data-saver:0.2
+    hostname: data-saver
+    ports:
+      - "8021:80"
+    environment:
+      DATA_GEN_API_EXT_PORT: 80
+      # DATA_SAVER_EXT_PORT: 8021
+      DATA_GEN_API_EXT: "data-gen-api"
+      DATA_RETRIEVE_EXT_PORT: 8022
+      DB_SQL_EXT: "sql-server-db"
+      DB_SQL_EXT_PORT: 1433
+
+  data-retrieve:
+    build:
+      dockerfile: /home/nxf42609/data/source/tpte-platform/tp-hello-devops/data-retrieve/Dockerfile
+      context: /home/nxf42609/data/source/tpte-platform/tp-hello-devops/data-retrieve/   
+    container_name: data-retrieve
+    image: data-retrieve:0.2
+    hostname: data-retrieve
+    ports:
+      - "8022:80"
+    environment:
+      DATA_GEN_API_EXT_PORT: 8020
+      DATA_SAVER_EXT_PORT: 8021
+      # DATA_RETRIEVE_EXT_PORT: 8022
+      DB_SQL_EXT: "sql-server-db"
+      DB_SQL_EXT_PORT: 1433
+
+  sql-server-db:
+    container_name: sql-server-db
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    hostname: sql-server-db
+    ports:
+      - "11433:1433"
+
+    volumes:
+      # - /home/nxf42609/test1:/test1
+      - /home/nxf42609/data/source/tpte-platform/tp-hello-devops/db-sql/db/data:/var/opt/mssql/data 
+      - /home/nxf42609/data/source/tpte-platform/tp-hello-devops/db-sql/db/log:/var/opt/mssql/log 
+      - /home/nxf42609/data/source/tpte-platform/tp-hello-devops/db-sql/db/secrets:/var/opt/mssql/secrets 
+
+    environment:
+      SA_PASSWORD: "MyStrongPassword123"
+      ACCEPT_EULA: "Y"
+
+ 

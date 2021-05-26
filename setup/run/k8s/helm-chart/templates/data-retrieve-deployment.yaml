@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    tp.devops.checker: data-retrieve
+  name: data-retrieve
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      tp.devops.checker: data-retrieve
+  template:
+    metadata:
+      labels:
+        tp.devops.checker: data-retrieve
+    spec:
+      containers:
+        - env:
+            # - name: DATA_RETRIEVE_EXT_PORT
+            #   value: "8022"
+            # - name: DATA_SAVER_EXT_PORT
+            #   value: "8021"
+            - name: DB_SQL_EXT
+              value: sql-server-db
+            - name: DB_SQL_EXT_PORT
+              value: "1433"
+          image: localhost:32000/data-retrieve:0.2
+          name: data-retrieve
+          ports:
+            - containerPort: 80
+      restartPolicy: Always
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    tp.devops.checker: data-retrieve
+  name: data-retrieve
+spec:
+  ports:
+    - name: "8022"
+      port: 8022
+      targetPort: 80
+  selector:
+    tp.devops.checker: data-retrieve
+
